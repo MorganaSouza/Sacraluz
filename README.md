@@ -5,7 +5,6 @@
 **Sacraluz** é uma aplicação web que busca criar uma experiência imersiva de conexão espiritual, inspirada na fé cristã e no ambiente sagrado da igreja católica. O projeto utiliza elementos visuais e sonoros para transportar o usuário para um espaço de contemplação, simbolizando o retorno ao centro da fé — o altar onde Cristo está presente.
 
 Este projeto foi pensado para conectar pessoas com a espiritualidade, através de um ambiente digital que remete à tranquilidade, luz divina e música contemplativa, facilitando momentos de reflexão e oração mesmo em ambientes digitais.
-
 ## Tecnologias Utilizadas
 
 - **HTML5** e **CSS3**: Estrutura e estilização responsiva e moderna.
