@@ -143,6 +143,33 @@
   @keyframes fadeOut {
     to { opacity: 0; }
   }
+
+  /* Botão repetir música */
+  #repeatButton {
+    position: fixed;
+    bottom: 40px;
+    width: 100%;
+    text-align: center;
+    z-index: 15;
+    display: none;
+  }
+
+  #repeatButton button {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    color: #ccc;
+    font-size: 16px;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  #repeatButton button:hover {
+    background-color: #e1306c;
+    border-color: #e1306c;
+    color: white;
+  }
 </style>
 </head>
 <body>
@@ -176,6 +203,10 @@
     </a>
   </div>
 
+  <div id="repeatButton">
+    <button>Repetir Música</button>
+  </div>
+
   <script>
     const particleNum = 100;
     const container = document.querySelector('.container');
@@ -192,30 +223,51 @@
       container.appendChild(circle);
     }
 
+    let widget;
+    const iframe = document.getElementById('soundcloudPlayer');
+    const repeatButtonDiv = document.getElementById('repeatButton');
+    const playInstruction = document.getElementById('playInstruction');
+
     function startSound() {
-      const iframe = document.getElementById('soundcloudPlayer');
-      const widget = SC.Widget(iframe);
-
       widget.play();
-
-      document.getElementById('playInstruction').style.display = 'none';
-
+      playInstruction.style.display = 'none';
+      repeatButtonDiv.style.display = 'none';
       window.removeEventListener('click', startSound);
       window.removeEventListener('touchstart', startSound);
     }
+
+    function setupWidget() {
+      widget = SC.Widget(iframe);
+
+      widget.bind(SC.Widget.Events.READY, () => {
+        // Espera interação do usuário para começar a tocar
+        window.addEventListener('click', startSound, { once: true });
+        window.addEventListener('touchstart', startSound, { once: true });
+
+        // Quando terminar a música, mostra botão repetir
+        widget.bind(SC.Widget.Events.FINISH, () => {
+          repeatButtonDiv.style.display = 'block';
+        });
+      });
+    }
+
+    // Botão repetir música
+    repeatButtonDiv.querySelector('button').addEventListener('click', () => {
+      widget.seekTo(0);
+      widget.play();
+      repeatButtonDiv.style.display = 'none';
+    });
 
     function loadSCAPIAndSetup() {
       if (!window.SC) {
         const script = document.createElement('script');
         script.src = "https://w.soundcloud.com/player/api.js";
         script.onload = () => {
-          window.addEventListener('click', startSound, { once: true });
-          window.addEventListener('touchstart', startSound, { once: true });
+          setupWidget();
         };
         document.body.appendChild(script);
       } else {
-        window.addEventListener('click', startSound, { once: true });
-        window.addEventListener('touchstart', startSound, { once: true });
+        setupWidget();
       }
     }
 
